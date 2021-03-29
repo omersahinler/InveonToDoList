@@ -18,13 +18,16 @@ namespace InveonTodoList.Controllers
         }
         public async Task<ActionResult> Index()
         {
+            _context.Database.EnsureCreated();
             IQueryable<TodoList> items = from list in _context.ToDoList orderby list.Id select list;
             List<TodoList> mytodolist = await items.ToListAsync();
 
-            var  itemTime= await _context.ToDoList.FirstOrDefaultAsync(x => x.CreatDateTime == DateTime.Now);
-            if (itemTime != null)
+            var now = DateTime.Parse(DateTime.Now.ToString("g"));
+
+            var  itemTime= await _context.ToDoList.Where(x => x.CreatDateTime == now).ToListAsync();
+            if (itemTime.Count > 0)
             {
-                TempData["Success2"] = "Girilen item zamanı gelmiştir!"+' '+itemTime.Content;
+                TempData["Success2"] = $"{now} Girilen item zamanı gelmiştir!  {string.Join(",",itemTime.Select(x => x.Content))}";
             }
             
             return View(mytodolist);

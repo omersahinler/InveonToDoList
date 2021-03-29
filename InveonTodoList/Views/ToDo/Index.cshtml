@@ -11,6 +11,7 @@
             url: '@Url.Action("Index","ToDo")',
             type: "GET",
             success: function (result) {
+                document.documentElement.innerHTML = result;
             },
             error: function (result) { alert("problem"); },
 
